@@ -530,8 +530,8 @@ void vehicle::init_state(int init_veh_fuel, int init_veh_status)
 /**
  * Smashes up a vehicle that has already been placed; used for generating
  * very damaged vehicles. Additionally, any spot where two vehicles overlapped
- * (ie, any spot with multiple frames) will be completely destroyed, as that
- * was the collision point.
+ * (ie, any spot with multiple non-passable frames) will be completely destroyed,
+ * as that was the collision point.
  */
 void vehicle::smash() {
     for (size_t part_index = 0; part_index < parts.size(); part_index++) {
@@ -544,7 +544,8 @@ void vehicle::smash() {
         std::vector<int> parts_in_square = parts_at_relative(next_part.mount.x, next_part.mount.y);
         int structures_found = 0;
         for (auto &square_part_index : parts_in_square) {
-            if (part_info(square_part_index).location == part_location_structure) {
+            if (part_info(square_part_index).location == part_location_structure &&
+                !part_info(square_part_index).has_flag(VPFLAG_VEH_PASSABLE) ) {
                 structures_found++;
             }
         }
@@ -3874,14 +3875,16 @@ veh_collision vehicle::part_collision (int part, int x, int y, bool just_detect)
     // vehicle collisions are a special case. just return the collision.
     // the map takes care of the dynamic stuff.
     if (is_veh_collision) {
-       veh_collision ret;
-       ret.type = veh_coll_veh;
-       //"imp" is too simplistic for veh-veh collisions
-       ret.part = part;
-       ret.target = oveh;
-       ret.target_part = target_part;
-       ret.target_name = oveh->name.c_str();
-       return ret;
+       if (!oveh->part_flag(target_part, "VEH_PASSABLE")) {
+           veh_collision ret;
+           ret.type = veh_coll_veh;
+           //"imp" is too simplistic for veh-veh collisions
+           ret.part = part;
+           ret.target = oveh;
+           ret.target_part = target_part;
+           ret.target_name = oveh->name.c_str();
+           return ret;
+       }
     }
 
     //Damage armor before damaging any other parts

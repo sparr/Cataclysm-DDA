@@ -354,4 +354,5 @@ void init_vpart_bitflag_map()
     /*    vpart_bitflag_map["SWIMMABLE"] = VPFLAG_SWIMMABLE; */ // only relevent for cars in water
     vpart_bitflag_map["RECHARGE"] = VPFLAG_RECHARGE;
     vpart_bitflag_map["VISION"] = VPFLAG_EXTENDS_VISION;
+    vpart_bitflag_map["VEH_PASSABLE"] = VPFLAG_VEH_PASSABLE;
 }

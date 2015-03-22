@@ -261,6 +261,11 @@ void map::update_vehicle_cache( vehicle *veh, const bool brand_new )
             continue;
         }
         const point p = gpos + it->precalc[0];
+        if(veh_cached_parts.count(p)) {
+            if (veh_cached_parts[p].first->part_flag(veh_cached_parts[p].second, "VEH_PASSABLE")) {
+                veh_cached_parts.erase(p);
+            }
+        }
         veh_cached_parts.insert( std::make_pair( p,
                                  std::make_pair( veh, partid ) ) );
         if( inbounds( p.x, p.y ) ) {
