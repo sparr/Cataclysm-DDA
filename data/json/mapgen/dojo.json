@@ -59,9 +59,9 @@
             "sound": "crunch.",
             "sound_fail": "whump.",
             "items": [
-                { "item": "straw_pile", "amount": 8, "minamount": 5},
-                { "item": "rag", "amount": 4, "minamount": 2 },
-                { "item": "string_36", "amount": 2, "minamount": 1 }
+                { "item": "straw_pile", "count": [5, 8] },
+                { "item": "rag", "count": [2, 4] },
+                { "item": "string_36", "count": [1, 2] }
             ]
         }
     },
@@ -108,13 +108,13 @@
                 ],
                 "terrain":{
                     " ": "t_null",
-                    "g": "t_wall_glass_h",
+                    "g": "t_wall_glass",
                     ",": "t_pavement_y",
                     "-": "t_pavement",
                     "#": "t_floor",
                     ".": "t_floor",
-                    "q": "t_wall_h",
-                    "x": "t_wall_v",
+                    "q": "t_wall",
+                    "x": "t_wall",
                     "L": "t_floor",
                     "+": "t_door_glass_c",
                     "'": "t_door_c",
