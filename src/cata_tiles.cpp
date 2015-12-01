@@ -1222,14 +1222,13 @@ bool cata_tiles::draw_from_id_string(std::string id, TILE_CATEGORY category,
 bool cata_tiles::draw_sprite_at(const std::vector<int> &spritelist, int x, int y, int rota, lit_level ll,
                                 bool apply_night_vision_goggles)
 {
+    int ret = 0;
+    // blit foreground based on rotation
     SDL_Rect destination;
     destination.x = x;
     destination.y = y;
     destination.w = tile_width;
     destination.h = tile_height;
-
-    int ret = 0;
-    // blit foreground based on rotation
     int rotate_sprite, sprite_num;
     if ( spritelist.empty() ) {
         // render nothing
@@ -1265,8 +1264,20 @@ bool cata_tiles::draw_sprite_at(const std::vector<int> &spritelist, int x, int y
             switch ( rota ) {
                 default:
                 case 0: // unrotated (and 180, with just two sprites)
-                    ret = SDL_RenderCopyEx( renderer, sprite_tex, NULL, &destination,
-                        0, NULL, SDL_FLIP_NONE );
+                    for (int ly = 0; ly < tile_height; ly++) {
+                        SDL_Rect src;
+                        src.x = 0;
+                        src.y = ly;
+                        src.w = tile_width;
+                        src.h = 1;
+                        SDL_Rect dst;
+                        dst.x = x + ly/2 - tile_height;
+                        dst.y = y + ly;
+                        dst.w = tile_width;
+                        dst.h = 1;
+                        ret = SDL_RenderCopyEx( renderer, sprite_tex, &src, &dst,
+                            0, NULL, SDL_FLIP_NONE );
+                    }
                     break;
                 case 1: // 90 degrees (and 270, with just two sprites)
 #if (defined _WIN32 || defined WINDOWS)
@@ -1288,8 +1299,20 @@ bool cata_tiles::draw_sprite_at(const std::vector<int> &spritelist, int x, int y
                     break;
             }
         } else { // don't rotate, same as case 0 above
-            ret = SDL_RenderCopyEx( renderer, sprite_tex, NULL, &destination,
-                0, NULL, SDL_FLIP_NONE );
+            for (int ly = 0; ly < tile_height; ly++) {
+                SDL_Rect src;
+                src.x = 0;
+                src.y = ly;
+                src.w = tile_width;
+                src.h = 1;
+                SDL_Rect dst;
+                dst.x = x + ly/2 - tile_height;
+                dst.y = y + ly;
+                dst.w = tile_width;
+                dst.h = 1;
+                ret = SDL_RenderCopyEx( renderer, sprite_tex, &src, &dst,
+                    0, NULL, SDL_FLIP_NONE );
+            }
         }
 
         if( ret != 0 ) {
