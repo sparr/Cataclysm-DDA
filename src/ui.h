@@ -541,19 +541,7 @@ void kill_advanced_inv();
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_wrap( V val,
-        bool inc, S size )
-{
-    if( size == 0 ) {
-        return 0;
-    }
-    if constexpr( std::is_unsigned_v<V> ) {
-        if( !inc && val == 0 ) {
-            return size ? size - 1 : 0;
-        }
-    }
-    return modulo( val + ( inc ? 1 : -1 ), size );
-}
-
+        bool inc, S size );
 /**
  * Helper for typical arrow key UI list navigation with wrap-around
  * Specialized for enum values
@@ -561,11 +549,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename T, typename I>
 inline typename std::enable_if<std::is_enum<T>::value, T>::type increment_and_wrap( T val, I inc,
-        T size )
-{
-    return static_cast<T>( increment_and_wrap( static_cast<int>( val ), inc,
-                           static_cast<int>( size ) ) );
-}
+        T size );
 
 /**
  * Helper for typical UI list navigation with wrap-around
@@ -573,26 +557,7 @@ inline typename std::enable_if<std::is_enum<T>::value, T>::type increment_and_wr
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_wrap( V val,
-        int delta, S size )
-{
-    if( size == 0 ) {
-        return 0;
-    }
-    // Templating of existing `unsigned int` triggers linter rules against `unsigned long`
-    // NOLINTBEGIN(cata-no-long)
-    if( ( delta < 0 && val < static_cast<V>( -delta ) ) || ( delta > 0 &&
-            static_cast<S>( val + delta ) >= size ) ) {
-        if( val == 0 || ( val < static_cast<V>( size ) - 1 && delta > 0 ) ) {
-            return size - 1;
-        } else {
-            return 0;
-        }
-        // NOLINTEND(cata-no-long)
-    } else {
-        return val + delta;
-    }
-}
-
+        int delta, S size );
 
 /**
  * Helper for typical arrow key UI list navigation without wrap-around
@@ -600,15 +565,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
-        bool inc, S max )
-{
-    if constexpr( std::is_unsigned_v<V> ) {
-        if( !inc && val == 0 ) {
-            return 0;
-        }
-    }
-    return std::clamp<V>( val + ( inc ? 1 : -1 ), 0, max );
-}
+        bool inc, S max );
 
 /**
  * Helper for typical UI list navigation without wrap-around
@@ -616,18 +573,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
-        int delta, S max )
-{
-    // Templating of existing `unsigned int` triggers linter rules against `unsigned long`
-    // NOLINTBEGIN(cata-no-long)
-    if constexpr( std::is_unsigned_v<V> ) {
-        if( delta < 0 && val <= static_cast<V>( -delta ) ) {
-            return 0;
-        }
-    }
-    // NOLINTEND(cata-no-long)
-    return std::clamp<V>( val + delta, 0, max );
-}
+        int delta, S max );
 
 /**
  * Helper for typical arrow key UI list navigation without wrap-around
@@ -635,15 +581,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
-        bool inc, S min, S max )
-{
-    if constexpr( std::is_unsigned_v<V> ) {
-        if( !inc && val == 0 ) {
-            return 0;
-        }
-    }
-    return std::clamp<V>( val + ( inc ? 1 : -1 ), min, max );
-}
+        bool inc, S min, S max );
 
 /**
  * Helper for typical UI list navigation without wrap-around
@@ -651,15 +589,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename V, typename S>
 inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
-        int delta, S min, S max )
-{
-    if constexpr( std::is_unsigned_v<V> ) {
-        if( delta < 0 && val <= static_cast<V>( -delta ) ) {
-            return 0;
-        }
-    }
-    return std::clamp<V>( val + delta, min, max );
-}
+        int delta, S min, S max );
 
 /**
  * Helper for typical arrow key UI list navigation without wrap-around
@@ -668,11 +598,7 @@ inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_an
  */
 template<typename T, typename I>
 inline typename std::enable_if<std::is_enum<T>::value, T>::type increment_and_clamp( T val, I inc,
-        T size )
-{
-    return static_cast<T>( increment_and_clamp( static_cast<int>( val ), inc,
-                           static_cast<int>( size ) ) );
-}
+        T size );
 
 /**
  * Helper for typical UI list navigation with wrap-around

@@ -1326,4 +1326,79 @@ bool navigate_ui_list( const std::string &action, V &val, int page_delta, S size
     }
     return true;
 }
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_wrap( V val,
+        bool inc, S size )
+{
+    return increment_and_wrap( val, static_cast<int>( inc ? 1 : -1 ), size );
+}
+
+template<typename T, typename I>
+inline typename std::enable_if<std::is_enum<T>::value, T>::type increment_and_wrap( T val, I inc,
+        T size )
+{
+    return static_cast<T>( increment_and_wrap( static_cast<int>( val ), inc,
+                           static_cast<int>( size ) ) );
+}
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_wrap( V val,
+        int delta, S size )
+{
+    if( size == 0 ) {
+        return 0;
+    }
+    // wrap to last
+    if( val <= 0 && delta < 0 ) {
+        return size - 1;
+    }
+    // wrap to first
+    if( val >= size - 1 && delta > 0 ) {
+        return 0;
+    }
+    return std::clamp<V>( val + delta, 0, size - 1 );
+}
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
+        bool inc, S max )
+{
+    return increment_and_clamp( val, static_cast<int>( inc ? 1 : -1 ), static_cast<S>( 0 ), max );
+}
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
+        int delta, S max )
+{
+    return increment_and_clamp( val, delta, static_cast<S>( 0 ), max );
+}
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
+        bool inc, S min, S max )
+{
+    return increment_and_clamp( val, inc ? 1 : -1, min, max );
+}
+
+template<typename V, typename S>
+inline typename std::enable_if < !std::is_enum<V>::value, V >::type increment_and_clamp( V val,
+        int delta, S min, S max )
+{
+    cata_assert( min <= max );
+    if constexpr( std::is_unsigned_v<V> ) {
+        if( delta < 0 && val <= static_cast<V>( -delta ) ) {
+            return min;
+        }
+    }
+    return std::clamp<V>( val + delta, min, max );
+}
+
+template<typename T, typename I>
+inline typename std::enable_if<std::is_enum<T>::value, T>::type increment_and_clamp( T val, I inc,
+        T size )
+{
+    return static_cast<T>( increment_and_clamp( static_cast<int>( val ), inc,
+                           static_cast<int>( size ) ) );
+}
 // NOLINTEND(cata-no-long)
