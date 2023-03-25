@@ -118,27 +118,27 @@ int tileray::dir_symbol( int sym ) const
             return "h\\j/h\\j/"[dir8()];
         case 'h':
             // horizontal line
-            return "jhjh"[dir4()];
+            return "j/h\\j/h\\"[dir8()];
         case 'y':
             // top left corner
-            return "unby"[dir4()];
+            return "u>nvb<y^"[dir8()];
         case 'u':
             // top right corner
-            return "nbyu"[dir4()];
+            return "nvb<y^u>"[dir8()];
         case 'n':
             // bottom right corner
-            return "byun"[dir4()];
+            return "b<y^u>nv"[dir8()];
         case 'b':
             // bottom left corner
-            return "yunb"[dir4()];
+            return "y^u>nvb<"[dir8()];
         case '^':
-            return ">v<^"[dir4()];
+            return ">nvb<y^u"[dir8()];
         case '>':
-            return "v<^>"[dir4()];
+            return "vb<y^u>n"[dir8()];
         case 'v':
-            return "<^>v"[dir4()];
+            return "<y^u>nvb"[dir8()];
         case '<':
-            return "^>v<"[dir4()];
+            return "^u>nvb<y"[dir8()];
         case 'c':
             // +
             return "cXcXcXcX"[dir8()];

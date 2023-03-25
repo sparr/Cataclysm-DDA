@@ -3075,6 +3075,8 @@ point vehicle::coord_translate( const point &p ) const
     return q.xy();
 }
 
+// rotate coordinates using tileray shear/flip operations
+// used for vehicle movement
 void vehicle::coord_translate( const units::angle &dir, const point &pivot, const point &p,
                                tripoint &q ) const
 {
@@ -3084,13 +3086,54 @@ void vehicle::coord_translate( const units::angle &dir, const point &pivot, cons
     q.y = tdir.dy() + tdir.ortho_dy( p.y - pivot.y );
 }
 
+// rotate coordinates using three shear operations
+// https://www.ocf.berkeley.edu/~fricke/projects/israel/paeth/rotation_by_shearing.html
+// used for vehicle part placement
 void vehicle::coord_translate( tileray tdir, const point &pivot, const point &p,
                                tripoint &q ) const
 {
-    tdir.clear_advance();
-    tdir.advance( p.x - pivot.x );
-    q.x = tdir.dx() + tdir.ortho_dx( p.y - pivot.y );
-    q.y = tdir.dy() + tdir.ortho_dy( p.y - pivot.y );
+    units::angle dir = tdir.dir();
+
+    // shear calculation is only valid from -90 to +90 degrees
+    // we narrow that to -45 to +45 to preserve symmetry across diagonals
+    int rot = 0;
+    while( dir > 45_degrees ) {
+        dir -= 90_degrees;
+        rot++;
+    }
+    rot %= 4;
+    dir = dir * 0.99; // to avoid sin(+/- 30) rounding inconsistency
+
+    // // assume that pivot coords were produced with integer division by two
+    // // so it could be correct or half a tile low
+    // // adjust by a quarter tile to make the error symmetric
+    // double x = p.x - pivot.x - 0.25;
+    // double y = p.y - pivot.y - 0.25;
+
+    double x = p.x - pivot.x;
+    double y = p.y - pivot.y;
+
+    double alpha = -tan( dir / 2.0 );
+    double beta = sin( dir );
+
+    // // "perfect" three-shear operation
+    // x += std::round( alpha * y );
+    // y += std::round( beta * x );
+    // x += std::round( alpha * y );
+
+    // modified two-shear version
+    // to reduce tiles moving too far in one turn increment
+    x += std::round( alpha * y * 1.5 );
+    y += std::round( beta * x );
+
+    // undo the 90 degree rotations
+    while(rot--) {
+        std::swap( x, y );
+        x = -x;
+    }
+
+    q.x = std::round(x) + pivot.x;
+    q.y = std::round(y) + pivot.y;
 }
 
 tripoint vehicle::mount_to_tripoint( const point &mount ) const
