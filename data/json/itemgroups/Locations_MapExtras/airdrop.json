@@ -15,7 +15,7 @@
       { "group": "airdrop_tent", "prob": 25 },
       { "group": "emer_blanket_box", "prob": 50 },
       { "group": "bandages_box", "prob": 25 },
-      { "item": "cardboard", "count": [ 1200, 1700 ] }
+      { "item": "cardboard", "count": [ 0, 200 ] }
     ]
   },
   {
@@ -28,7 +28,7 @@
       { "group": "soap_packed", "count": [ 0, 1 ], "prob": 50 },
       { "item": "large_tent_kit", "count": [ 0, 3 ], "prob": 50 },
       { "item": "emer_blanket", "count": [ 0, 7 ], "prob": 75 },
-      { "item": "cardboard", "count": [ 1200, 1700 ] }
+      { "item": "cardboard", "count": [ 200, 600 ] }
     ]
   },
   {
@@ -109,8 +109,7 @@
     "entries": [
       { "item": "jp8", "charges": [ 10000, 15000 ], "container-item": "diesel_generator" },
       { "item": "standing_directed_floodlight" },
-      { "item": "jp8", "charges": [ 19000, 20000 ], "container-item": "jerrycan_big", "count": 5 },
-      { "item": "cardboard", "count": [ 1200, 1700 ] }
+      { "item": "jp8", "charges": [ 19000, 20000 ], "container-item": "jerrycan_big", "count": 5 }
     ]
   },
   {
