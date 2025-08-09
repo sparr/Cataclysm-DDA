@@ -284,8 +284,8 @@ void overmap::place_lakes( const std::vector<const overmap *> &neighbor_overmaps
 
             // We're going to flood-fill our lake so that we can consider the entire lake when evaluating it
             // for placement, even when the lake runs off the edge of the current overmap.
-            std::vector<point_om_omt> lake_points =
-                ff::point_flood_fill_4_connected( seed_point, visited, is_lake );
+            std::unordered_set<point_om_omt> lake_points =
+                ff::point_flood_fill_4_connected<std::unordered_set>( seed_point, visited, is_lake );
 
             // If this lake doesn't exceed our minimum size threshold, then skip it. We can use this to
             // exclude the tiny lakes that don't provide interesting map features and exist mostly as a
@@ -300,7 +300,7 @@ void overmap::place_lakes( const std::vector<const overmap *> &neighbor_overmaps
             // over any rivers that are placed already. Note that the assumption here is that river
             // overmap generation (e.g. place_rivers) runs BEFORE lake overmap generation.
             std::unordered_set<point_om_omt> lake_set;
-            for( auto &p : lake_points ) {
+            for( const auto &p : lake_points ) {
                 lake_set.emplace( p );
             }
 
@@ -441,8 +441,8 @@ void overmap::place_oceans( const std::vector<const overmap *> &neighbor_overmap
                 continue;
             }
 
-            std::vector<point_om_omt> ocean_points =
-                ff::point_flood_fill_4_connected( seed_point, visited, is_ocean );
+            std::unordered_set<point_om_omt> ocean_points =
+                ff::point_flood_fill_4_connected<std::unordered_set>( seed_point, visited, is_ocean );
 
             // Ocean size is checked like lake size, but minimum size is much bigger.
             // you could change this, if you want little tiny oceans all over the place.
@@ -453,7 +453,7 @@ void overmap::place_oceans( const std::vector<const overmap *> &neighbor_overmap
             }
 
             std::unordered_set<point_om_omt> ocean_set;
-            for( auto &p : ocean_points ) {
+            for( const auto &p : ocean_points ) {
                 ocean_set.emplace( p );
             }
 
