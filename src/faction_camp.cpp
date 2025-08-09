@@ -5131,35 +5131,15 @@ void om_range_mark( const tripoint_abs_omt &origin, int range, bool add_notes,
         }
     }
 
-    for( tripoint_abs_omt &pt : note_pts ) {
-        if( add_notes ) {
-            if( !overmap_buffer.has_note( pt ) ) {
-                overmap_buffer.add_note( pt, message );
-            }
-        } else {
-            if( overmap_buffer.has_note( pt ) && overmap_buffer.note( pt ) == message ) {
-                overmap_buffer.delete_note( pt );
-            }
-        }
-    }
+    om_path_mark( note_pts, add_notes, message );
 }
 
 void om_line_mark( const tripoint_abs_omt &origin, const tripoint_abs_omt &dest, bool add_notes,
                    const std::string &message )
 {
-    std::vector<tripoint_abs_omt> note_pts = line_to( origin, dest );
+    const std::vector<tripoint_abs_omt> note_pts = line_to( origin, dest );
 
-    for( const tripoint_abs_omt &pt : note_pts ) {
-        if( add_notes ) {
-            if( !overmap_buffer.has_note( pt ) ) {
-                overmap_buffer.add_note( pt, message );
-            }
-        } else {
-            if( overmap_buffer.has_note( pt ) && overmap_buffer.note( pt ) == message ) {
-                overmap_buffer.delete_note( pt );
-            }
-        }
-    }
+    om_path_mark( note_pts, add_notes, message );
 }
 
 static void om_path_mark(
